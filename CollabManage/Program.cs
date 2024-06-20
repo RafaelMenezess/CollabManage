@@ -2,8 +2,13 @@
 using Microsoft.Extensions.DependencyInjection;
 using CollabManage.Data;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<CollabManageContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CollabManageContext") ?? throw new InvalidOperationException("Connection string 'CollabManageContext' not found.")));
+
+var connection = builder.Configuration["ConnectionStrings:CollabManageContext"];
+
+builder.Services.AddDbContext<CollabManageContext>(options => options.
+                                   UseMySql(connection,
+                                   new MySqlServerVersion(
+                                   new Version(8, 0, 2))));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
