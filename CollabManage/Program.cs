@@ -1,4 +1,9 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using CollabManage.Data;
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<CollabManageContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CollabManageContext") ?? throw new InvalidOperationException("Connection string 'CollabManageContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
