@@ -11,7 +11,7 @@ public class EmployeesController : Controller
 
     public EmployeesController(CollabManageContext context)
     {
-        _context = context;
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
     // GET: Employees

@@ -11,4 +11,13 @@ public class Employee
     public string Cargo { get; set; }
     [Required]
     public string Departamento { get; set; }
+
+    public Employee() { }
+    public Employee(int id, string name, string cargo, string departamento)
+    {
+        Id = id;
+        Name = name;
+        Cargo = cargo;
+        Departamento = departamento;
+    }
 }

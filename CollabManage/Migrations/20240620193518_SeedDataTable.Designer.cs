@@ -2,6 +2,7 @@
 using CollabManage.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CollabManage.Migrations
 {
     [DbContext(typeof(CollabManageContext))]
-    partial class CollabManageContextModelSnapshot : ModelSnapshot
+    [Migration("20240620193518_SeedDataTable")]
+    partial class SeedDataTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
