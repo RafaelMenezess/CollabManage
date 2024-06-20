@@ -1,4 +1,4 @@
-namespace CollabManage.Models
+namespace CollabManage.Models.ViewModel
 {
     public class ErrorViewModel
     {
