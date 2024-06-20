@@ -11,4 +11,5 @@ public class CollabManageContext : DbContext
     }
 
     public DbSet<Employee> Employee { get; set; } = default!;
+    public DbSet<Company> Company { get; set; } = default!;
 }
