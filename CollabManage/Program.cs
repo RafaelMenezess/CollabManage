@@ -1,5 +1,6 @@
 ﻿using CollabManage.Data;
 using CollabManage.Services;
+using CollabManage.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddDbContext<CollabManageContext>(options => options.
 
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<EmployeeService>();
+builder.Services.AddScoped<HomeService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
