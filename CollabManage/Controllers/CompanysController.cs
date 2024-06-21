@@ -1,20 +1,21 @@
-﻿using CollabManage.Data;
+﻿using CollabManage.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CollabManage.Controllers
 {
     public class CompanysController : Controller
     {
-        private readonly CollabManageContext _context;
+        private readonly CompanyService _companyService;
 
-        public CompanysController(CollabManageContext context)
+        public CompanysController(CompanyService companyService)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _companyService = companyService ?? throw new ArgumentNullException(nameof(companyService));
         }
+
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Company.ToListAsync());
+            List<Models.Company> list = _companyService.FindAll();
+            return View(list);
         }
     }
 }

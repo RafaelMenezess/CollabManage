@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using CollabManage.Data;
+﻿using CollabManage.Data;
+using CollabManage.Services;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 var connection = builder.Configuration["ConnectionStrings:CollabManageContext"];
@@ -9,6 +9,8 @@ builder.Services.AddDbContext<CollabManageContext>(options => options.
                                    UseMySql(connection,
                                    new MySqlServerVersion(
                                    new Version(8, 0, 2))));
+
+builder.Services.AddScoped<CompanyService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
