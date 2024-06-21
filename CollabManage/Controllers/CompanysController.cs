@@ -1,4 +1,5 @@
-﻿using CollabManage.Services;
+﻿using CollabManage.Models;
+using CollabManage.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollabManage.Controllers
@@ -15,7 +16,59 @@ namespace CollabManage.Controllers
         public async Task<IActionResult> Index()
         {
             List<Models.Company> list = _companyService.FindAll();
+            if (list == null)
+            {
+                return NotFound();
+            }
+
             return View(list);
+        }
+
+        public async Task<IActionResult> Details(int? id)
+        {
+            var campany = await _companyService.Details(id);
+            if (campany == null)
+            {
+                return NotFound();
+            }
+
+            return View(campany);
+        }
+
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var campany = await _companyService.FindById(id);
+            if (campany == null)
+            {
+                return NotFound();
+            }
+
+            return View(campany);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Company company)
+        {
+            if (id != company.Id)
+            {
+                return BadRequest();
+            }
+            try
+            {
+                _companyService.Update(company);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
     }
 }
+

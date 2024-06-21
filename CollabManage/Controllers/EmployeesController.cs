@@ -17,7 +17,7 @@ public class EmployeesController : Controller
     // GET: Employees
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Employee.ToListAsync());
+        return View(await _context.Employee.OrderBy(x => x.Name).ToListAsync());
     }
 
     // GET: Employees/Details/5
