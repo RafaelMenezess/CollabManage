@@ -11,6 +11,7 @@ builder.Services.AddDbContext<CollabManageContext>(options => options.
                                    new Version(8, 0, 2))));
 
 builder.Services.AddScoped<CompanyService>();
+builder.Services.AddScoped<EmployeeService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

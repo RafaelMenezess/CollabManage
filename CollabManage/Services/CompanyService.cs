@@ -20,7 +20,7 @@ public class CompanyService
 
     public Task<Company> FindById(int? id)
     {
-        if (id == null || _context.Employee == null)
+        if (id == null || _context.Company == null)
         {
             throw new NotFoundException("Id não pode ser nulo");
         }
@@ -30,7 +30,7 @@ public class CompanyService
 
     public Task<Company> Details(int? id)
     {
-        if (id == null || _context.Employee == null)
+        if (id == null || _context.Company == null)
         {
             throw new NotFoundException("Id não encontrado");            
         }

@@ -1,35 +1,37 @@
-﻿using CollabManage.Data;
-using CollabManage.Models;
+﻿using CollabManage.Models;
+using CollabManage.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace CollabManage.Controllers;
 
 public class EmployeesController : Controller
 {
-    private readonly CollabManageContext _context;
+    private readonly EmployeeService _employeeService;
 
-    public EmployeesController(CollabManageContext context)
+    public EmployeesController(EmployeeService employeeService)
     {
-        _context = context ?? throw new ArgumentNullException(nameof(context));
+        _employeeService = employeeService ?? throw new ArgumentNullException(nameof(employeeService));
     }
 
-    // GET: Employees
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Employee.OrderBy(x => x.Name).ToListAsync());
-    }
-
-    // GET: Employees/Details/5
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null || _context.Employee == null)
+        var list = _employeeService.FindAll();
+        if (list == null)
         {
             return NotFound();
         }
 
-        var employee = await _context.Employee
-            .FirstOrDefaultAsync(m => m.Id == id);
+        return View(list);
+    }
+
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var employee = await _employeeService.Details(id);
         if (employee == null)
         {
             return NotFound();
@@ -38,89 +40,67 @@ public class EmployeesController : Controller
         return View(employee);
     }
 
-    // GET: Employees/Create
     public IActionResult Create()
     {
         return View();
     }
 
-    // POST: Employees/Create
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name,Cargo,Departamento")] Employee employee)
+    public async Task<IActionResult> Create(Employee employee)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            _context.Add(employee);
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-        return View(employee);
+
+        await _employeeService.InsertAsync(employee);
+        return RedirectToAction(nameof(Index));
     }
 
-    // GET: Employees/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
-        if (id == null || _context.Employee == null)
+        if (id == null)
         {
             return NotFound();
         }
 
-        var employee = await _context.Employee.FindAsync(id);
+        var employee = await _employeeService.FindById(id);
         if (employee == null)
         {
             return NotFound();
         }
+
         return View(employee);
     }
 
-    // POST: Employees/Edit/5
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Cargo,Departamento")] Employee employee)
+    public async Task<IActionResult> Edit(int id, Employee employee)
     {
         if (id != employee.Id)
         {
-            return NotFound();
+            return BadRequest();
         }
-
-        if (ModelState.IsValid)
+        try
         {
-            try
-            {
-                _context.Update(employee);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmployeeExists(employee.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            _employeeService.Update(employee);
             return RedirectToAction(nameof(Index));
         }
-        return View(employee);
+        catch (Exception)
+        {
+            return NotFound();
+        }
     }
 
-    // GET: Employees/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
-        if (id == null || _context.Employee == null)
+        if (id == null)
         {
             return NotFound();
         }
 
-        var employee = await _context.Employee
-            .FirstOrDefaultAsync(m => m.Id == id);
+        var employee = await _employeeService.FindById(id);
         if (employee == null)
         {
             return NotFound();
@@ -129,27 +109,23 @@ public class EmployeesController : Controller
         return View(employee);
     }
 
-    // POST: Employees/Delete/5
+
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        if (_context.Employee == null)
+        if (id == null)
         {
-            return Problem("Entity set 'CollabManageContext.Employee'  is null.");
+            return NotFound();
         }
-        var employee = await _context.Employee.FindAsync(id);
-        if (employee != null)
+        try
         {
-            _context.Employee.Remove(employee);
+            await _employeeService.Delete(id);
+            return RedirectToAction(nameof(Index));
         }
-
-        await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
-    }
-
-    private bool EmployeeExists(int id)
-    {
-        return _context.Employee.Any(e => e.Id == id);
+        catch (Exception)
+        {
+            throw;
+        }
     }
 }
