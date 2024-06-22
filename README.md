@@ -1,5 +1,3 @@
-# CollabManage
-
 # Aplicação de Gerenciamento de Colaboradores e Empresa
 
 ## Descrição
