@@ -1,6 +1,8 @@
 ﻿using CollabManage.Models;
+using CollabManage.Models.ViewModel;
 using CollabManage.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace CollabManage.Controllers
 {
@@ -17,10 +19,10 @@ namespace CollabManage.Controllers
         [Route("empresa/{id?}")]
         public async Task<IActionResult> Index()
         {
-            List<Models.Company> list = _companyService.FindAll();
+            List<Company> list = _companyService.FindAll();
             if (list == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Empresas não encontradas." });
             }
 
             return View(list);
@@ -32,7 +34,7 @@ namespace CollabManage.Controllers
             var campany = await _companyService.Details(id);
             if (campany == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = $"Empresa Id:{id} não encontrada." });
             }
 
             return View(campany);
@@ -43,13 +45,13 @@ namespace CollabManage.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = $"Id não fornecido." });
             }
 
             var campany = await _companyService.FindById(id);
             if (campany == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = $"Empresa Id:{id} não encontrada." });
             }
 
             return View(campany);
@@ -61,17 +63,28 @@ namespace CollabManage.Controllers
         {
             if (id != company.Id)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Id's não correspondem." });
             }
             try
             {
                 _companyService.Update(company);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = $"Erro: {ex.Message}" });
             }
+        }
+
+        [Route("empresa/erro/{id?}")]
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
+            {
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModel);
         }
     }
 }

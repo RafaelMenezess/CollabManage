@@ -28,18 +28,19 @@ public class EmployeeService
         return _context.Employee.FirstOrDefaultAsync(m => m.Id == id);
     }
 
-    public async Task<Employee> Details(int? id)
+    public Task<Employee> Details(int? id)
     {
         if (id == null || _context.Company == null)
         {
             throw new NotFoundException("Id não encontrado");
         }
 
-        var employee = await _context.Employee.FirstOrDefaultAsync(m => m.Id == id);
+        var employee = _context.Employee.FirstOrDefaultAsync(m => m.Id == id);
         if (employee == null)
         {
             throw new NotFoundException("Id não encontrado");
         }
+
         return employee;
     }
 

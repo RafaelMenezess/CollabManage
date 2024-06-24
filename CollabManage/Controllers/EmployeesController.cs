@@ -1,6 +1,8 @@
 ﻿using CollabManage.Models;
+using CollabManage.Models.ViewModel;
 using CollabManage.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace CollabManage.Controllers;
 
@@ -19,7 +21,7 @@ public class EmployeesController : Controller
         var list = _employeeService.FindAll();
         if (list == null)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Error), new { message = "Colaboradores não encontrados." });
         }
 
         return View(list);
@@ -30,13 +32,13 @@ public class EmployeesController : Controller
     {
         if (id == null)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Error), new { message = "Id não foi fornecido." });
         }
 
         var employee = await _employeeService.Details(id);
         if (employee == null)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Error), new { message = $"Colaborador Id:{id} não encontrado." });
         }
 
         return View(employee);
@@ -67,13 +69,13 @@ public class EmployeesController : Controller
     {
         if (id == null)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Error), new { message = $"Id do colaborador não foi fornecido." });
         }
 
         var employee = await _employeeService.FindById(id);
         if (employee == null)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Error), new { message = $"Colaborador ID:{id} não encontrado." });
         }
 
         return View(employee);
@@ -85,16 +87,16 @@ public class EmployeesController : Controller
     {
         if (id != employee.Id)
         {
-            return BadRequest();
+            return RedirectToAction(nameof(Error), new { message = "Id's não correspondem." });
         }
         try
         {
             _employeeService.Update(employee);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Error), new { message = $"Erro {ex.Message}" });
         }
     }
 
@@ -103,13 +105,13 @@ public class EmployeesController : Controller
     {
         if (id == null)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Error), new { message = "Id do colaborador não fornecido." });
         }
 
         var employee = await _employeeService.FindById(id);
         if (employee == null)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Error), new { message = $"Colaborador ID:{id} não encontrado." });
         }
 
         return View(employee);
@@ -122,16 +124,27 @@ public class EmployeesController : Controller
     {
         if (id == null)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Error), new { message = $"Id do colaborador não fornecido." });
         }
         try
         {
             await _employeeService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw;
+            return RedirectToAction(nameof(Error), new { message = $"Erro {ex.Message}" });
         }
+    }
+
+    [Route("colaboradores/erro/{id?}")]
+    public IActionResult Error(string message)
+    {
+        var viewModel = new ErrorViewModel
+        {
+            Message = message,
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+        };
+        return View(viewModel);
     }
 }

@@ -32,21 +32,21 @@ public class CompanyService
     {
         if (id == null || _context.Company == null)
         {
-            throw new NotFoundException("Id não encontrado");            
+            throw new NotFoundException("Id não encontrado");
         }
 
         Task<Company> company = _context.Company
             .FirstOrDefaultAsync(m => m.Id == id);
         if (company == null)
         {
-            throw new NotFoundException("Id não encontrado");            
+            throw new NotFoundException("Id não encontrado");
         }
         return company;
     }
 
     public void Update(Company company)
     {
-        if (!_context.Company.Any(x=> x.Id == company.Id))
+        if (!_context.Company.Any(x => x.Id == company.Id))
         {
             throw new NotFoundException("Id não encontrado");
         }
