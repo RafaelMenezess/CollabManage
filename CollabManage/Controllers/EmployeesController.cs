@@ -13,6 +13,7 @@ public class EmployeesController : Controller
         _employeeService = employeeService ?? throw new ArgumentNullException(nameof(employeeService));
     }
 
+    [Route("colaboradores/{id?}")]
     public async Task<IActionResult> Index()
     {
         var list = _employeeService.FindAll();
@@ -24,6 +25,7 @@ public class EmployeesController : Controller
         return View(list);
     }
 
+    [Route("colaboradores/detalhes/{id?}")]
     public async Task<IActionResult> Details(int? id)
     {
         if (id == null)
@@ -40,6 +42,7 @@ public class EmployeesController : Controller
         return View(employee);
     }
 
+    [Route("colaboradores/criar/{id?}")]
     public IActionResult Create()
     {
         return View();
@@ -47,6 +50,7 @@ public class EmployeesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+
     public async Task<IActionResult> Create(Employee employee)
     {
         if (!ModelState.IsValid)
@@ -58,6 +62,7 @@ public class EmployeesController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Route("colaboradores/editar/{id?}")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -93,6 +98,7 @@ public class EmployeesController : Controller
         }
     }
 
+    [Route("colaboradores/excluir/{id?}")]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null)

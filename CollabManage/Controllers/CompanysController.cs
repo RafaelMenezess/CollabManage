@@ -13,6 +13,8 @@ namespace CollabManage.Controllers
             _companyService = companyService ?? throw new ArgumentNullException(nameof(companyService));
         }
 
+
+        [Route("empresa/{id?}")]
         public async Task<IActionResult> Index()
         {
             List<Models.Company> list = _companyService.FindAll();
@@ -24,6 +26,7 @@ namespace CollabManage.Controllers
             return View(list);
         }
 
+        [Route("empresa/detalhes/{id?}")]
         public async Task<IActionResult> Details(int? id)
         {
             var campany = await _companyService.Details(id);
@@ -35,6 +38,7 @@ namespace CollabManage.Controllers
             return View(campany);
         }
 
+        [Route("empresa/editar/{id?}")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
